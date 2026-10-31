@@ -1,13 +1,12 @@
 import {state,mutate,activeCourse} from './store.js';
-import {CATALOG,DAYS,SUBJECTS,GRADES,TOPICS,GOALS,COURSE_FOCUS} from '../data/mock-data.js';
-import {sliderFields,bindSliderReadings,readSliders,neutralPreferences} from './preferences.js';
+import {DAYS,SUBJECTS,GRADES,GOALS} from '../data/mock-data.js';
+import {QUESTIONS} from './preferences.js';
 import {planFor,planProgress} from './plans.js';
 import {matchTutors,matchGroups,WEIGHTS,descriptions} from './matching.js';
 import {$,$$,workspace,esc,money,tag,btn,avatar,progress,panel,stat,empty,item,formSelect,field,choices,feedback} from './ui.js';
 const q=(k)=>new URLSearchParams(location.search).get(k);
 const getTutor=(s,id)=>s.catalog.tutors.find(x=>x.id===id);
 const label=(key)=>({step:'Step-by-step explanations',practice:'Practice drills',concept:'Concept building',encouraging:'Encouraging guidance',independent:'Let me try independently',slow:'Slow & detailed',medium:'Moderate pace',fast:'Fast-paced'})[key]||key;
-const ftopics=topic=>TOPICS[topic]||[];
 export function renderStudent(page){
  if(page==='dashboard')return dashboard();
  if(page==='request')return request();
@@ -34,48 +33,39 @@ function dashboard(){const s=state(),stud=s.student;
 }
 function request(){
  const s=state(),prior=s.student.request||{};
- const topicOptions=(ftopics(prior.subject||'Mathematics')).map(t=>[t,t]);
- const html=`<div class="wizard-top"><div class="wizard-tabs"><span class="on" data-step-label="0">1. Academic goals</span><span data-step-label="1">2. Learning preferences</span><span data-step-label="2">3. Schedule & budget</span></div><div class="small">3 steps · approximately 3 minutes</div></div>
+ const prefSelect=(q)=>formSelect(q.key,q.label,[{value:'any',label:'No strong preference (skip)'},...q.options.map(([value,label])=>({value,label}))],prior[q.key]||'any');
+ const html=`<div class="wizard-top"><div class="wizard-tabs"><span class="on" data-step-label="0">1. School goals</span><span data-step-label="1">2. Three quick preferences</span><span data-step-label="2">3. Schedule & budget</span></div><div class="small">3 short steps · no personality test</div></div>
  <div class="two-col form-split"><section class="panel"><form id="request-form" novalidate>
- <div class="wizard-page" data-step="0"><div class="form-intro"><h2>What do you want to improve?</h2><p>We’ll use your school goal and weak topics to find the right expertise.</p></div>
- <div class="form-grid">${formSelect('grade','Grade level',GRADES,prior.grade||'M.4')}${formSelect('subject','Subject',SUBJECTS,prior.subject||'Mathematics')}</div>
- ${formSelect('goalType','Main academic goal',GOALS,prior.goalType||'school-grade')}
- ${formSelect('courseFocus','What do you want to prepare for?',COURSE_FOCUS,prior.courseFocus||'Midterm exam')}
- <div class="form-grid">${formSelect('currentGrade','Current school grade', ['1.0','1.5','2.0','2.5','3.0','3.5','4.0'],prior.currentGrade||'2.5')}${formSelect('targetGrade','Target school grade',['2.0','2.5','3.0','3.5','4.0'],prior.targetGrade||'3.5')}</div>
- <label class="field"><span>Your specific goal</span><textarea name="goal" required rows="3" placeholder="e.g., improve my Math grade by the next midterm">${esc(prior.goal||'Improve my school Mathematics grade before the next exam')}</textarea></label>
- <div class="field"><span>Topics where you need help (choose any)</span><div id="topic-choices">${choices('topics',topicOptions,prior.topics||['Algebra','Functions'])}</div></div>
- <label class="field"><span>School worksheet / syllabus (optional)</span><input name="worksheet" type="file" accept=".pdf,.png,.jpg,.jpeg"><small>Demo only: the file name is shown, not uploaded or analyzed by AI.</small></label></div>
- <div class="wizard-page" data-step="1" hidden><div class="form-intro"><h2>How do you prefer to learn?</h2><p>These preferences help compare you with each tutor’s stated teaching approach. They are not fixed learning-style labels.</p></div>
- ${formSelect('currentLevel','Current understanding',[{value:'foundation',label:'Building foundations'},{value:'intermediate',label:'Can do most questions with some help'},{value:'advanced',label:'Ready for challenging questions'}],prior.currentLevel||'foundation')}
- ${formSelect('pace','Preferred pace',[{value:'slow',label:'Slow and detailed explanations'},{value:'medium',label:'Moderate pace'},{value:'fast',label:'Fast-paced practice'}],prior.pace||'slow')}
- ${formSelect('approach','Preferred teaching approach',[{value:'step',label:'Step-by-step worked examples'},{value:'practice',label:'Practice questions and drills'},{value:'concept',label:'Concept explanations and discussion'}],prior.approach||'step')}
- ${formSelect('interaction','Preferred tutor interaction',[{value:'encouraging',label:'Encouraging and supportive'},{value:'independent',label:'Give me time to try independently'}],prior.interaction||'encouraging')}
- <div class="preference-intro"><h3>9 shared teaching & interaction sliders</h3><p>These 1–5 axes use the exact same meaning as the tutor onboarding sliders. Midpoint 3 means flexible or no strong preference.</p></div>
- ${sliderFields('studentPref',prior.preferences||neutralPreferences())}</div>
- <div class="wizard-page" data-step="2" hidden><div class="form-intro"><h2>Make the match practical.</h2><p>These are essential filters. We only recommend options that fit your budget, schedule and class format.</p></div>
+ <div class="wizard-page" data-step="0"><div class="form-intro"><h2>What would you like to improve?</h2><p>We only need your subject, school grade and academic goal to begin.</p></div>
+ <div class="form-grid">${formSelect('grade','Your school year',GRADES,prior.grade||'M.4')}${formSelect('subject','Subject',SUBJECTS,prior.subject||'Mathematics')}</div>
+ ${formSelect('goalType','Main learning goal',GOALS,prior.goalType||'school-grade')}
+ <div class="form-grid">${formSelect('currentGrade','Current school grade (optional)', ['Not sure','1.0','1.5','2.0','2.5','3.0','3.5','4.0'],prior.currentGrade||'Not sure')}${formSelect('targetGrade','Target school grade (optional)',['Not sure','2.0','2.5','3.0','3.5','4.0'],prior.targetGrade||'Not sure')}</div>
+ ${formSelect('currentLevel','Current understanding',[{value:'foundation',label:'Need to build foundations'},{value:'intermediate',label:'Understand most topics with some help'},{value:'advanced',label:'Ready for challenging questions'}],prior.currentLevel||'foundation')}
+ <label class="field"><span>Anything your tutor should know? (optional)</span><textarea name="goal" rows="2" placeholder="For example: I want to feel more confident for school exams">${esc(prior.goal||'')}</textarea></label>
+ <label class="field"><span>School worksheet / syllabus (optional)</span><input name="worksheet" type="file" accept=".pdf,.png,.jpg,.jpeg"><small>File name only in this demo. No upload or AI analysis is performed.</small></label></div>
+ <div class="wizard-page" data-step="1" hidden><div class="form-intro"><h2>How do you like to learn?</h2><p>Just three quick questions. Tutors describe the same three attributes, so we can compare both sides.</p></div>
+ <div class="simple-preferences">${QUESTIONS.map((q,i)=>`<div class="preference-choice"><span class="preference-index">0${i+1}</span>${prefSelect(q)}</div>`).join('')}</div>
+ <div class="policy-note">These are preferences, not fixed learning-style labels. You can change them later.</div></div>
+ <div class="wizard-page" data-step="2" hidden><div class="form-intro"><h2>Find a class you can actually attend.</h2><p>Budget, class type and available times are required filters — no unsuitable tutors in the results.</p></div>
  ${formSelect('format','Class format',[{value:'one',label:'Online 1-on-1'},{value:'group',label:'Online small group (2–5 learners)'}],prior.format||'one')}
- <div class="field"><span>Times you can attend (choose at least one)</span>${choices('schedule',DAYS.map(x=>[x.id,x.name]),prior.schedule||['thu','sat'])}</div>
+ <div class="field"><span>When can you learn? (choose at least one)</span>${choices('schedule',DAYS.map(x=>[x.id,x.name]),prior.schedule||['thu','sat'])}</div>
  ${field('budget','Maximum budget (THB per hour)',prior.budget||500,'number')}
- <div class="policy-note">✧ This prototype uses transparent filtering and weighted scoring. AI-written explanations and worksheet analysis are planned, not connected.</div></div>
+ <div class="policy-note">✧ Subject, grade, format, budget and schedule are hard filters. Weighted scoring ranks only eligible options. AI-generated wording is planned; this demo uses rules and sample data.</div></div>
  <div class="wizard-actions"><button type="button" class="button outline" id="wizard-back" hidden>← Back</button><button type="button" class="button primary" id="wizard-next">Continue →</button><button type="submit" class="button primary" id="wizard-submit" hidden>Find my Top 3 →</button></div><div id="form-error" class="form-message"></div></form></section>
- <aside class="panel sidebar-tips"><div class="tip-icon">✧</div><h3>How matching works</h3>${item('Step 1 · Eligibility','Subject, grade, format, budget and time must match')}${item('Step 2 · Weighted fit','Topics, pace, approach, schedule, price and evidence')}${item('Step 3 · Your choice','Compare up to 3 options and book only when ready')}<div class="mini-tips">Matching is a recommendation, not a guarantee of grade improvement.</div></aside></div>`;
- workspace('student','request','Tell us about your learning goal','Your answers are matched against the same attributes in tutor profiles.',html);
- bindSliderReadings($('#request-form'));
+ <aside class="panel sidebar-tips"><div class="tip-icon">✧</div><h3>How matching works</h3>${item('01 · Filter','Subject, grade, format, budget and time must work')}${item('02 · Compare','Goal, level, pace and 3 quick preferences')}${item('03 · Choose','Compare up to three eligible tutors or classes')}<div class="mini-tips">We never require specific topics or a 9-question personality questionnaire to find a tutor.</div></aside></div>`;
+ workspace('student','request','Find your tutor','A shorter request form — only the answers needed for our MVP matching.',html);
  let step=0;const pages=$$('.wizard-page');
  function showStep(){pages.forEach((n,i)=>n.hidden=i!==step);$$('[data-step-label]').forEach((n,i)=>n.classList.toggle('on',i<=step));$('#wizard-back').hidden=step===0;$('#wizard-next').hidden=step===2;$('#wizard-submit').hidden=step!==2;feedback('#form-error','');}
  $('#wizard-back').addEventListener('click',()=>{step--;showStep()});
  $('#wizard-next').addEventListener('click',()=>{
-  const visible=pages[step];if([...visible.querySelectorAll('textarea[required],input[required],select[required]')].some(el=>!el.checkValidity())){feedback('#form-error','Please complete the required fields.','error');return;}
-  if(step===0&&!visible.querySelector('input[name="topics"]:checked')){feedback('#form-error','Choose at least one topic.','error');return;}
+  const visible=pages[step];if([...visible.querySelectorAll('textarea[required],input[required],select[required]')].some(el=>!el.checkValidity())){feedback('#form-error','Complete the required fields.','error');return;}
   step++;showStep();
  });
- const subject=$('select[name="subject"]');subject.addEventListener('change',()=>{$('#topic-choices').innerHTML=choices('topics',ftopics(subject.value).map(t=>[t,t]),[])});
  $('#request-form').addEventListener('submit',e=>{
   e.preventDefault();const form=e.currentTarget,fd=new FormData(form),data={};
-  for(const [k,v] of fd.entries()){if(k.startsWith('studentPref-'))continue; if(k==='topics'||k==='schedule'){(data[k]??=[]).push(v)}else if(k==='worksheet')data.worksheetName=v?.name||'';else data[k]=v;}
-  data.budget=Number(data.budget);data.preferences=readSliders(fd,'studentPref');
-  if(!data.schedule?.length){feedback('#form-error','Please select at least one available time.','error');return;}
-  if(!(data.budget>0)){feedback('#form-error','Please enter a valid budget.','error');return;}
+  for(const [k,v] of fd.entries()){if(k==='schedule')(data[k]??=[]).push(v);else if(k==='worksheet')data.worksheetName=v?.name||'';else data[k]=v;}
+  data.budget=Number(data.budget);if(!data.schedule?.length){feedback('#form-error','Choose at least one available day.','error');return;}
+  if(!(data.budget>0)){feedback('#form-error','Enter a valid maximum budget.','error');return;}
   mutate(s=>{s.student.request=data;s.pendingMatch=true;s.matchResults=[];s.selectedTutorId=null;s.selectedGroupId=null;});location.href='/student/matching.html';
  });
 }
@@ -98,7 +88,7 @@ function displayMatches(matches,r){
  box.innerHTML=`<div class="results-title"><div><h2>${matches.length} recommended ${r.format==='group'?'class':'tutor'}${matches.length>1?'es':''}</h2><p>Scores are calculated from your answers. Sample tutor attributes are illustrative.</p></div>${tag('Rules-based matching','purple')}</div><div class="match-list">${matches.map((m,i)=>{
  const tutor=r.format==='group'?m.tutor:m;
  const why=m.fit.why.map(x=>`<div>✓ ${esc(x)}</div>`).join('');
- return `<article class="match-card"><div class="match-upper"><span class="rank">#${i+1}</span>${avatar(tutor.initials,tutor.color,'large')}<div class="match-info"><h3>${esc(r.format==='group'?m.name:tutor.name)}</h3><p>${esc(tutor.subject)} · ${esc(r.format==='group'?m.grade:tutor.grades.join(' / '))}</p><span class="match-sub">${esc(tutor.university)}</span></div><div class="score"><strong>${m.fit.score}%</strong><small>fit score</small></div></div><div class="match-lower"><div><div class="card-eyebrow">WHY THIS MATCH?</div>${why}<div class="match-preference-note">9-slider teaching fit: ${m.fit.preferenceScore}/100 (example)</div></div><div class="match-cost"><strong>${money(r.format==='group'?m.price:tutor.price)}</strong><small>${r.format==='group'?'per student / package':'per hour'}</small><button class="button primary match-pick" data-pick="${esc(m.id)}">View details →</button></div></div></article>`;
+ return `<article class="match-card"><div class="match-upper"><span class="rank">#${i+1}</span>${avatar(tutor.initials,tutor.color,'large')}<div class="match-info"><h3>${esc(r.format==='group'?m.name:tutor.name)}</h3><p>${esc(tutor.subject)} · ${esc(r.format==='group'?m.grade:tutor.grades.join(' / '))}</p><span class="match-sub">${esc(tutor.university)}</span></div><div class="score"><strong>${m.fit.score}%</strong><small>fit score</small></div></div><div class="match-lower"><div><div class="card-eyebrow">WHY THIS MATCH?</div>${why}<div class="match-preference-note">3-question preference fit: ${m.fit.preferenceScore}/100 (example)</div></div><div class="match-cost"><strong>${money(r.format==='group'?m.price:tutor.price)}</strong><small>${r.format==='group'?'per student / package':'per hour'}</small><button class="button primary match-pick" data-pick="${esc(m.id)}">View details →</button></div></div></article>`;
  }).join('')}</div><details class="panel explain"><summary>How were these scores calculated? <span>See weighted breakdown</span></summary><div class="weights-grid">${Object.keys(WEIGHTS).map(k=>`<div><b>${descriptions[k]}</b><strong>${WEIGHTS[k]*100}%</strong></div>`).join('')}</div><p>Each eligible option receives sub-scores from 0–100. The weighted score is a ranking aid, not a scientific prediction of grades. All tutor credentials are mock data.</p></details>`;
  $$('.match-pick').forEach(b=>b.addEventListener('click',()=>{
   mutate(s=>{if(r.format==='group'){s.selectedGroupId=b.dataset.pick;s.selectedTutorId=s.catalog.groups.find(g=>g.id===b.dataset.pick)?.tutorId}else{s.selectedTutorId=b.dataset.pick;s.selectedGroupId=null}});
@@ -108,7 +98,7 @@ function displayMatches(matches,r){
 function profile(){const s=state(),id=s.selectedTutorId,t=id&&getTutor(s,id);
  if(!t)return workspace('student','matching','Tutor profile','Choose a match first.',empty('No tutor selected','Please select a tutor or class from your matches.',btn('View matches →','/student/matching.html')));
  const group=s.selectedGroupId?s.catalog.groups.find(g=>g.id===s.selectedGroupId):null;
- workspace('student','matching','Tutor details','Review the teaching approach before you book.',`<div class="two-col big-left">${panel('Meet your tutor',`<div class="profile-hero">${avatar(t.initials,t.color,'huge')}<div><div class="eyebrow">PROFILE EXAMPLE</div><h2>${esc(t.name)}</h2><p>${esc(t.subject)} · ${esc(t.university)}</p>${tag('Screened (demo)','green')}</div></div><p>${esc(t.about)}</p>${item('Teaching approach',t.approach.map(label).join(', '))}${item('Learning pace',t.pace.map(label).join(', '))}${item('Specialist topics',t.topics.join(', '))}${item('Available schedule',t.schedule.map(id=>DAYS.find(x=>x.id===id)?.name||id).join('; '))}`)}${panel(group?'Group course details':'Book your first lesson',`<div class="big-price">${money(group?group.price:t.price)} <small>${group?'per student / package':'/ hour'}</small></div>${group?`<h3>${esc(group.name)}</h3><p>${esc(group.description)}</p>${item('Available places',`${group.capacity-group.byos-group.platform} open / ${group.capacity} total`)}`:`<p>Choose a time with your tutor, then confirm your course package.</p>`}<div class="row-actions">${btn('Request a lesson →','/student/booking.html')}</div><p class="fine-print">No real money or tutor contact occurs in this prototype.</p>`)}</div>`);
+ workspace('student','matching','Tutor details','Review the teaching approach before you book.',`<div class="two-col big-left">${panel('Meet your tutor',`<div class="profile-hero">${avatar(t.initials,t.color,'huge')}<div><div class="eyebrow">PROFILE EXAMPLE</div><h2>${esc(t.name)}</h2><p>${esc(t.subject)} · ${esc(t.university)}</p>${tag('Screened (demo)','green')}</div></div><p>${esc(t.about)}</p>${item('Teaching approach',t.approach.map(label).join(', '))}${item('Learning pace',t.pace.map(label).join(', '))}${item('Available schedule',t.schedule.map(id=>DAYS.find(x=>x.id===id)?.name||id).join('; '))}`)}${panel(group?'Group course details':'Book your first lesson',`<div class="big-price">${money(group?group.price:t.price)} <small>${group?'per student / package':'/ hour'}</small></div>${group?`<h3>${esc(group.name)}</h3><p>${esc(group.description)}</p>${item('Available places',`${group.capacity-group.byos-group.platform} open / ${group.capacity} total`)}`:`<p>Choose a time with your tutor, then confirm your course package.</p>`}<div class="row-actions">${btn('Request a lesson →','/student/booking.html')}</div><p class="fine-print">No real money or tutor contact occurs in this prototype.</p>`)}</div>`);
 }
 function booking(){const s=state(),t=getTutor(s,s.selectedTutorId),group=s.catalog.groups.find(x=>x.id===s.selectedGroupId),r=s.student.request;
  if(!t)return workspace('student','matching','Booking','Select a tutor first.',empty('No match selected','Choose a tutor from your recommendations.',btn('View matches','/student/matching.html')));
