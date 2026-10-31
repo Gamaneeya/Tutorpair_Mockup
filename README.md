@@ -1,8 +1,10 @@
-# TutorPair — MVP Demo V4: Register / Login + Parent LINE Integration Handoff
+# TutorPair — MVP Demo V5: BYOS Invitations + Unified Student Account
 
 **Working interactive prototype (HTML + CSS + vanilla JavaScript)** designed for the startup practice pitch on **November 3, 2026**. Students and tutors start with empty accounts, while a returning-user scenario showcases active courses, learner plans and parent reports.
 
 > **Demo only:** Registration and email/password sign-in work locally in a single browser, but **there is no real authentication server**. Identity checks, reviews, payments, LINE messages, tutor availability and quiz scores are simulated. No actual AI API, backend, database, payment gateway or LINE account is connected. Do not enter real student personal data or identity documents.
+
+**New in V5:** BYOS Tutor invitation links (same-browser demo), student class joining, multi-class Student Dashboard, and Find Another Tutor without creating a second student account. **Start with [`docs/BYOS_DEMO_HANDOFF.md`](docs/BYOS_DEMO_HANDOFF.md)** for two demo scripts and backend handoff.
 
 **For Login/backend teammate:** see `docs/LOGIN_DEMO_HANDOFF.md` for the login flow and the server APIs needed for production.
 
@@ -22,7 +24,15 @@ py -m http.server 5500
 4. Click **Log out**, then **Log in** with the same demo credentials to restore the saved local workspace.
 5. For a fast presentation, open **Log in → Explore sample accounts without registering** and choose **New Student**, **New Tutor**, **Active Tutor**, or **Linked Parent**. Only these sample scenarios show the role switcher. Registered accounts keep their own role and separate local state.
 
-## New in V4 — functional account-form demo
+## New in V5 — BYOS + cross-subject learning sample
+
+**Fast preview:** `/login.html` → **New Student** → **Load sample BYOS Mathematics class** → **Find Another Tutor** → Physics matching → book/enroll → **My classes** shows Math (BYOS) and Physics (TutorPair) side-by-side.
+
+**Shareable link preview (same browser only):** Register Tutor → approve in demo → create Small Group → **Invite students (BYOS)** → generate link → log out → register/login as Student via link → accept → Student My classes → Find Another Tutor. **No new Student account is needed for the second subject.**
+
+Read the exact steps, edge cases, API handoff and warnings: [`docs/BYOS_DEMO_HANDOFF.md`](docs/BYOS_DEMO_HANDOFF.md).
+
+## Inherited from V4 — functional account-form demo
 
 | Feature | Behavior |
 |---|---|
@@ -34,7 +44,7 @@ py -m http.server 5500
 | Protected mock pages | Unauthenticated visitors are redirected to `/login.html`; signed-in accounts cannot switch roles. |
 | Presentation short-cuts | The previous new/returning sample flows remain under a collapsible section on the Login page. |
 
-**Not a production login:** All login logic is executed in the user's browser; a backend, secure server-side sessions and shared database are required before deployment with real users. Do not use genuine passwords or real personal data. Registered Student / Tutor / Parent accounts still do not share data with each other — for the mock cross-role Parent LINE demonstration, use the sample scenario switcher.
+**Not a production login:** All login logic is executed in the user's browser; a backend, secure server-side sessions and shared database are required before deployment with real users. Do not use genuine passwords or real personal data. The V5 BYOS flow selectively updates the registered Tutor and Student workspaces on the **same browser/origin**, but is not cross-device or server-based. Parent LINE integration and shared reports between registered accounts still require a backend. The sample role switcher is separate from this invitation flow.
 
 ## What changed in the previous revision
 
@@ -46,7 +56,7 @@ py -m http.server 5500
 | Additional subject / grade | Tutor requests an additional subject or grade. Admin reviews **only that new request**; approved courses **stay active**. |
 | New 1-on-1 course | Tutor can **publish and edit a course immediately** within approved subject and grade scope; **no repeat verification** for each new course, price or schedule. |
 | Matching engine | Deterministic hard filters: only published listings from identity-verified tutors with approved subject/grade, acceptable format, schedule and price. Weighted rank uses academic goal, level/pace, schedule, price, the 3 preferences and sample quality. |
-| Small groups + BYOS | Existing group creation/fill-seat workflow remains, restricted to an **approved subject/grade scope**. |
+| Small groups + BYOS | Create groups within an **approved subject/grade scope**; generate invite links for registered student accounts in the same browser. New groups start with 0 BYOS seats until students accept invitations. |
 | Progress and parents | Tutor notes, student objectives and linked parent progress continue using local sample state. LINE is a message **preview**, not an API integration. |
 
 ### Matching weights
@@ -97,15 +107,17 @@ Configured in `frontend/assets/js/matching.js`:
 ## Folder structure
 
 ```text
-TutorPair_Verification_Simplified_MVP/
+TutorPair_BYOS_Unified_Student_MVP/
 ├── frontend/
-│   ├── index.html, login.html, register.html
+│   ├── index.html, login.html, register.html, join.html
 │   ├── student/*.html
-│   ├── tutor/*.html
+│   ├── tutor/*.html (including invite.html)
 │   ├── parent/*.html
 │   ├── admin/*.html
 │   └── assets/
 │       ├── data/mock-data.js  <- example tutors / approval scopes
+│       ├── js/byos.js         <- browser BYOS invitation/join demo
+│       ├── js/join.js         <- public invitation page
 │       ├── js/auth.js         <- browser-only registration / login simulator
 │       ├── js/preferences.js  <- the 3 common preference questions
 │       ├── js/matching.js     <- filters and weights
@@ -115,6 +127,7 @@ TutorPair_Verification_Simplified_MVP/
 │       ├── js/admin.js        <- Initial and subject-only approvals
 │       ├── js/parent.js, js/plans.js, js/public.js, js/ui.js, js/main.js
 │       └── css/styles.css
+├── tests/byos.test.mjs
 ├── tests/auth.test.mjs
 ├── tests/matching.test.mjs
 ├── docs/
@@ -127,6 +140,7 @@ TutorPair_Verification_Simplified_MVP/
 ## Verify matching logic
 
 ```powershell
+node tests/byos.test.mjs
 node tests/auth.test.mjs
 node tests/matching.test.mjs
 ```

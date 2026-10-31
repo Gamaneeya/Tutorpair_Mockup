@@ -56,3 +56,30 @@ body[data-role='']{background:#fff}.nav{height:83px;background:#fff;position:rel
 .signed-in-label{font-size:11px;font-weight:700;color:#6c748a;max-width:190px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:800px){.auth-split{grid-template-columns:1fr}.auth-aside{padding:27px 32px}.auth-aside h2{font-size:23px}.auth-aside-symbol{display:none}.demo-quick{margin-top:19px}.auth-main{padding:32px}}
 @media(max-width:620px){.auth-main{padding:27px 20px}.auth-aside{padding:27px 20px}.auth-roles{gap:5px}.auth-role-inner{padding:13px 4px}.auth-role strong{font-size:11px}.auth-role small{font-size:9px}.signed-in-label{display:none}.auth-register{padding:22px}}
+
+/* V5: unified student account & tutor BYOS invitations */
+.byos-intro{border:1px solid #e6e2ff;background:linear-gradient(116deg,#f6f4ff 0%,#fff 76%);padding:26px 28px;border-radius:18px;margin-bottom:20px}
+.byos-intro h2{font-size:23px;margin:8px 0;color:#302b69;letter-spacing:-.025em}
+.byos-intro p{color:#69728c;max-width:740px;font-size:12px;line-height:1.8}
+.byos-intro .actions{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+.byos-course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:12px 0 20px}
+.byos-course{border:1px solid #e8e9f3;border-radius:15px;background:linear-gradient(165deg,#fff,#fcfbff);padding:18px;display:grid;gap:12px;min-width:0}
+.byos-course h3{font-size:16px;line-height:1.4;margin:4px 0;color:#323654}
+.byos-course p{color:#8189a1;font-size:11px;margin:0}
+.byos-card-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:11px;color:#717991}
+.byos-course .progress-track{margin:3px 0 2px}
+.byos-progress-link{font-size:11px;color:#6861d0;font-weight:800;text-decoration:none}
+.byos-progress-link:hover{text-decoration:underline}
+.byos-link-card,.byos-action-box{border:1px solid #d6d2fc;background:#f7f6ff;border-radius:14px;padding:18px;margin-top:17px}
+.byos-link-card strong,.byos-action-box h3{color:#4b48a8;font-size:14px}
+.byos-link-card p,.byos-action-box p{font-size:11.5px;color:#707790;line-height:1.7}
+.byos-link-card input{width:100%;border:1px solid #d8d7f3;border-radius:9px;padding:12px;font:12px inherit;word-break:break-all;background:#fff}
+.byos-link-card .row-actions,.byos-action-box .row-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.byos-inline-copy{background:transparent;border:0;color:#625ad5;text-decoration:underline;font-size:11px;cursor:pointer;font-family:inherit}
+.byos-join-card{width:min(660px,100%)}
+.byos-join-card>p{font-size:12px;color:#747d97;line-height:1.7}
+.byos-invite-summary{border:1px solid #e4e6f2;border-radius:14px;padding:18px 20px;margin:22px 0;background:#fff}
+.byos-invite-summary .between{gap:14px;align-items:flex-start}
+.byos-invite-summary .between strong{font-size:15px;color:#353853}
+.byos-invite-summary .list-item{padding:9px 0}
+@media(max-width:540px){.byos-intro{padding:19px}.byos-intro h2{font-size:20px}.byos-join-card{padding:22px}.byos-course-grid{grid-template-columns:1fr}}

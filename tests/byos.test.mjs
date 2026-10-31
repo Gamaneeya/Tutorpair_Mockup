@@ -1,0 +1,43 @@
+import assert from 'node:assert/strict';
+import {registerDemoAccount,loginDemoAccount,logout} from '../frontend/assets/js/auth.js';
+import {prepareRegisteredWorkspace,state,save,studentCourses,addStudentCourse,start,seedBYOSStudentPreview} from '../frontend/assets/js/store.js';
+import {createGroupInvite,inviteInfo,resolveGroupInvite,acceptGroupInvite} from '../frontend/assets/js/byos.js';
+
+function memoryStorage(){const m=new Map();return {getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k),clear:()=>m.clear()}}
+globalThis.localStorage=memoryStorage();globalThis.sessionStorage=memoryStorage();globalThis.window={dispatchEvent(){}};globalThis.Event=class Event{constructor(type){this.type=type}};
+
+const tutor=await registerDemoAccount({name:'Tutor Mint',email:'mint@example.com',password:'fakePassword1',role:'tutor'});
+prepareRegisteredWorkspace(tutor);
+assert.throws(()=>createGroupInvite('group1'),/approved Tutor/);
+let ts=state();ts.tutor.verificationStatus='approved';ts.tutor.profile={formats:['one','group']};ts.tutor.subjectApprovals=[{status:'approved',subject:'Mathematics',grades:['M.4']}];ts.tutor.groups=['group1'];ts.catalog.groups.push({id:'group1',name:'M.4 Math Group',tutorId:'t-new',subject:'Mathematics',grade:'M.4',schedule:'sat',price:1600,sessions:8,capacity:2,byos:0,platform:0});save(ts);
+const link=createGroupInvite('group1');assert.ok(link.code.length>20);assert.equal(inviteInfo(link.code).groupId,'group1');
+assert.equal(resolveGroupInvite(link.code).seatsLeft,2);
+logout();
+const student=await registerDemoAccount({name:'Anna',email:'anna@example.com',password:'fakePassword2',role:'student'});
+prepareRegisteredWorkspace(student);
+const result=acceptGroupInvite(link.code);
+assert.equal(result.alreadyJoined,false);
+assert.equal(studentCourses(state()).length,1);
+assert.equal(studentCourses(state())[0].source,'BYOS');
+assert.equal(studentCourses(state())[0].tutorName,'Tutor Mint');
+assert.equal(acceptGroupInvite(link.code).alreadyJoined,true,'same student cannot occupy two seats');
+const additional={id:'physics-course',title:'Physics',subject:'Physics',tutorId:'t05',source:'TutorPair',started:true,sessions:8,completed:0};
+let st=state();addStudentCourse(st,additional);save(st);
+assert.equal(studentCourses(state()).length,2,'BYOS learner can join marketplace subject without a second registration');
+assert.deepEqual(studentCourses(state()).map(x=>x.source),['BYOS','TutorPair']);
+logout();await loginDemoAccount({email:'mint@example.com',password:'fakePassword1'});
+assert.equal(state().tutor.roster.length,1);
+assert.equal(state().tutor.roster[0].name,'Anna');
+assert.equal(state().catalog.groups.find(g=>g.id==='group1').byos,1);
+logout();
+const other=await registerDemoAccount({name:'Ben',email:'ben@example.com',password:'fakePassword3',role:'student'});
+prepareRegisteredWorkspace(other);
+acceptGroupInvite(link.code);assert.equal(resolveGroupInvite(link.code).seatsLeft,0);
+logout();
+const late=await registerDemoAccount({name:'Late',email:'late@example.com',password:'fakePassword4',role:'student'});
+prepareRegisteredWorkspace(late);
+assert.throws(()=>acceptGroupInvite(link.code),/full/);
+assert.throws(()=>resolveGroupInvite('madeup'),/cannot be found/);
+start('student','new');seedBYOSStudentPreview();seedBYOSStudentPreview();
+assert.equal(studentCourses(state()).length,1,'demo sample seed should be idempotent');
+console.log('PASS: verified tutor invite, student accepts, persistent tutor roster, no duplicate joins, full class, existing BYOS student finds marketplace tutor, quick preview seed');

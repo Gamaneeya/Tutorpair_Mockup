@@ -1,5 +1,6 @@
 import {getAuthSession} from './auth.js';
 import {renderPublic} from './public.js';
+import {renderJoin} from './join.js';
 import {renderStudent} from './student.js';
 import {renderTutor} from './tutor.js';
 import {renderParent} from './parent.js';
@@ -8,6 +9,7 @@ const role=document.body.dataset.role;
 const page=document.body.dataset.page;
 try{
  if(role&&!getAuthSession()){location.replace('/login.html');}
+ else if(page==='join')renderJoin();
  else if(!role)renderPublic(page);
  else if(role==='student')renderStudent(page);
  else if(role==='tutor')renderTutor(page);
