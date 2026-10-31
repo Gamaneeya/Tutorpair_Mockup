@@ -1,43 +1,57 @@
-/**
- * TutorPair SAMPLE DATA — edit this file to change the demo's starting content.
- * No UI, HTML, or CSS edits are required to change names, subjects, scores or prices.
- * The browser stores demo actions in localStorage; use the Reset demo button to reload these defaults.
- */
-export const mockData = {
-  people: {
-    student: { id: 's01', name: 'Nicha', fullName: 'Nicha P.', grade: 'M.4', initials: 'NP', goal: 'Improve Mathematics from 72% to 85%' },
-    parent: { id: 'p01', name: 'Khun Som', fullName: 'Somchai P.', linkedStudentId: 's01' },
-    tutor: { id: 't01', name: 'P’Mew', fullName: 'P’Mew Anong', subject: 'Mathematics', verified: true },
-    admin: { id: 'a01', name: 'Admin', fullName: 'TutorPair Admin' }
-  },
+// Edit this file when replacing the sample people, lessons, prices, or catalog.
+// No real identities, payments, or LINE messages are stored in this demo.
+export const GOALS = [
+  {value:'school-grade',label:'Improve school grades'},
+  {value:'exam-prep',label:'Prepare for a school exam'},
+  {value:'homework',label:'Understand homework / worksheets'},
+  {value:'foundation',label:'Build subject foundations'}
+];
+export const COURSE_FOCUS = ['Midterm exam','Final exam','Quiz preparation','Homework support','Concept review'];
+export const CATALOG = {
   tutors: [
-    {id:'t01', name:'P’Mew Anong', initials:'MA', subject:'Mathematics', grades:['M.4','M.5','M.6'], rate:450, rating:4.9, reviews:186, match:98, accent:'violet', university:'Chulalongkorn University', tagline:'Visual examples, patient explanations and guided practice.', availability:['Tue 18:00','Thu 17:00','Sat 10:00'], type:'1-on-1'},
-    {id:'t02', name:'P’Beam Thanat', initials:'BT', subject:'Mathematics', grades:['M.1','M.2','M.3','M.4','M.5','M.6'], rate:420, rating:4.8, reviews:94, match:94, accent:'orange', university:'Mahidol University', tagline:'Structured learning plans and clear weekly practice.', availability:['Wed 18:00','Fri 19:00'], type:'1-on-1'},
-    {id:'t03', name:'P’Fern Nalinee', initials:'FN', subject:'Physics', grades:['M.4','M.5','M.6'], rate:480, rating:4.9, reviews:102, match:91, accent:'teal', university:'KMITL', tagline:'Turn difficult concepts into simple, real-life examples.', availability:['Mon 17:30','Sat 13:00'], type:'1-on-1'}
+    {id:'t01', name:'P’Mew Anong', initials:'MA', color:'lavender', subject:'Mathematics', grades:['M.3','M.4','M.5','M.6'], topics:['Algebra','Functions','Word Problems'], price:450, levels:['foundation','intermediate'], pace:['slow','medium'], approach:['step','practice'], interaction:['encouraging'], schedule:['thu','sat'], formats:['one','group'], quality:94, university:'Chulalongkorn University', experience:'4 years tutoring', about:'Clear, patient explanations with guided problem-solving and weekly goals.', verified:true,preferences:{detail:1,practice:2,dialogue:2,guidance:1,atmosphere:2,formality:3,flexibility:2,energy:3,motivation:5},goals:['school-grade', 'exam-prep', 'foundation']},
+    {id:'t02', name:'P’Beam Thanat', initials:'BT', color:'peach', subject:'Mathematics', grades:['M.1','M.2','M.3','M.4','M.5','M.6'], topics:['Algebra','Geometry','Functions','Word Problems'], price:390, levels:['foundation','intermediate','advanced'], pace:['medium','fast'], approach:['practice','step'], interaction:['independent','encouraging'], schedule:['thu','tue'], formats:['one'], quality:87, university:'Mahidol University', experience:'3 years tutoring', about:'Structured homework, practice sets, and a steady focus on exam readiness.', verified:true,preferences:{detail:3,practice:1,dialogue:3,guidance:2,atmosphere:4,formality:2,flexibility:2,energy:4,motivation:3},goals:['school-grade', 'homework', 'exam-prep']},
+    {id:'t03', name:'P’Ploy Wiriya', initials:'PW', color:'mint', subject:'Mathematics', grades:['M.3','M.4','M.5'], topics:['Algebra','Functions','Geometry'], price:480, levels:['foundation','intermediate'], pace:['slow','medium'], approach:['concept','step'], interaction:['encouraging'], schedule:['thu','sun'], formats:['one','group'], quality:90, university:'Thammasat University', experience:'5 years tutoring', about:'Builds confidence by connecting ideas to easy-to-follow examples.', verified:true,preferences:{detail:2,practice:4,dialogue:1,guidance:2,atmosphere:1,formality:4,flexibility:4,energy:4,motivation:5},goals:['school-grade', 'foundation', 'homework']},
+    {id:'t04', name:'P’Arun Pat', initials:'AP', color:'sky', subject:'Mathematics', grades:['M.4','M.5','M.6'], topics:['Functions','Word Problems','Algebra'], price:500, levels:['intermediate','advanced'], pace:['medium','fast'], approach:['practice','concept'], interaction:['independent'], schedule:['thu','sat'], formats:['one'], quality:89, university:'KMUTT', experience:'2 years tutoring', about:'Challenge-driven teaching for students aiming to master difficult questions.', verified:true,preferences:{detail:4,practice:1,dialogue:3,guidance:4,atmosphere:5,formality:2,flexibility:2,energy:4,motivation:2},goals:['exam-prep', 'school-grade']},
+    {id:'t05', name:'P’Fern Nalinee', initials:'FN', color:'lavender', subject:'Physics', grades:['M.4','M.5','M.6'], topics:['Mechanics','Waves','Electricity'], price:460, levels:['foundation','intermediate'], pace:['slow','medium'], approach:['concept','step'], interaction:['encouraging'], schedule:['tue','sat'], formats:['one','group'], quality:91, university:'KMITL', experience:'4 years tutoring', about:'Makes physics concepts intuitive before moving to exam practice.', verified:true,preferences:{detail:2,practice:4,dialogue:2,guidance:1,atmosphere:3,formality:3,flexibility:3,energy:3,motivation:4},goals:['school-grade', 'foundation', 'exam-prep']},
+    {id:'t06', name:'P’Jane Akarin', initials:'JA', color:'peach', subject:'English', grades:['M.1','M.2','M.3','M.4','M.5','M.6'], topics:['Grammar','Reading','Writing','Conversation'], price:420, levels:['foundation','intermediate','advanced'], pace:['slow','medium'], approach:['concept','practice'], interaction:['encouraging'], schedule:['thu','sun'], formats:['one','group'], quality:92, university:'Chiang Mai University', experience:'6 years tutoring', about:'Improves school English using real examples and encouraging feedback.', verified:true,preferences:{detail:2,practice:4,dialogue:1,guidance:2,atmosphere:1,formality:5,flexibility:4,energy:4,motivation:5},goals:['school-grade', 'homework', 'foundation']}
   ],
-  student: {
-    activeCourses:2, completedLessons:6, totalLessons:8, latestQuiz:7, quizTotal:10,
-    course: {id:'c01',title:'M.4 Mathematics Foundations', subject:'Mathematics', tutorId:'t01', sessions:8, completed:6, price:3600, schedule:'Thu 17:00–18:00', nextTopic:'Graph transformations'},
-    quizHistory:[{label:'Baseline',value:40},{label:'Lesson 2',value:50},{label:'Lesson 4',value:60},{label:'Lesson 6',value:70}],
-    skills:[{name:'Quadratic equations',score:85},{name:'Graph interpretation',score:68},{name:'Factorization',score:82},{name:'Word problems',score:45}],
-    homework:[{name:'Factorization practice set',due:'Friday',done:false},{name:'Review graph transformation notes',due:'Thursday',done:true}],
-    goal:85
+  groups: [
+    {id:'g01',tutorId:'t01',name:'M.4 Math Grade Booster',subject:'Mathematics',grade:'M.4',topics:['Algebra','Functions','Word Problems'],schedule:'sat',capacity:4,byos:2,platform:0,price:1600,sessions:8,durationMinutes:60,description:'Small-group school worksheets and guided exam practice.'},
+    {id:'g02',tutorId:'t05',name:'M.5 Physics Focus Pod',subject:'Physics',grade:'M.5',topics:['Mechanics','Waves'],schedule:'tue',capacity:3,byos:1,platform:1,price:1800,sessions:8,durationMinutes:60,description:'Practice with classmates at the same level.'}
+  ]
+};
+
+export const SAMPLE = {
+  students: {
+    new: {id:'s-new',name:'New Student',grade:'M.4',request:null,course:null,lessonNotes:[],feedback:[]},
+    returning: {id:'s-demo',name:'Nicha',grade:'M.4',request:{grade:'M.4',subject:'Mathematics',currentLevel:'foundation',currentGrade:'2.5',targetGrade:'3.5',goal:'Improve my next school mathematics grade',topics:['Algebra','Functions'],pace:'slow',approach:'step',interaction:'encouraging',goalType:'school-grade',courseFocus:'Midterm exam',preferences:{detail:1,practice:2,dialogue:2,guidance:1,atmosphere:2,formality:3,flexibility:2,energy:3,motivation:5},schedule:['thu','sat'],budget:500,format:'one'},course:{id:'c100',tutorId:'t01',tutorName:'P’Mew Anong',subject:'Mathematics',title:'M.4 Mathematics Foundations',sessions:8,completed:6,price:3600,started:true,nextLesson:'Thursday · 17:00',source:'TutorPair'},lessonNotes:[{id:'ln1',topic:'Quadratic equations',score:7,total:10,strength:'Can factor simple quadratic expressions independently.',improve:'Needs additional practice on word problems.',homework:'Solve five word problems before the next lesson.',date:'Example · Session 6'}],feedback:[]}
   },
-  groupClasses: [
-    {id:'g01',title:'M.4 Math Exam Booster',subject:'Mathematics',grade:'M.4',schedule:'Sat · 10:00–11:30',duration:'4 weeks · 8 lessons',capacity:4,byos:2,platform:0,price:1500,tutorId:'t01',summary:'Practice school worksheets and build confidence before the exam.'},
-    {id:'g02',title:'Physics Problem-Solving Pod',subject:'Physics',grade:'M.5',schedule:'Sun · 13:00–14:30',duration:'4 weeks · 8 lessons',capacity:3,byos:1,platform:1,price:1800,tutorId:'t03',summary:'Small-group Physics practice, discussion and guided exercises.'}
-  ],
-  latestNote: {id:'n01',studentId:'s01',student:'Nicha P.',subject:'Mathematics',topic:'Quadratic equations',session:6,level:'Developing',score:7,total:10,strength:'Can factor simple quadratic equations independently.',improve:'Needs more practice with word problems.',next:'Complete 5 practice questions before Thursday.',updated:'Today · 18:10'},
-  lessonNotes: [],
-  notifications: [
-    {id:'m01',type:'Lesson summary',subject:'Mathematics',title:'Your child’s learning update is ready',date:'Today · 18:10',status:'Preview'},
-    {id:'m02',type:'Schedule reminder',subject:'Mathematics',title:'Next Mathematics lesson: Thursday at 17:00',date:'Yesterday · 09:00',status:'Preview'}
-  ],
-  line: {connected:false, lessons:true, weekly:true, reminders:false},
-  requests: [
-    {id:'r01',student:'Kanya S.',grade:'M.4',subject:'Mathematics',goal:'Prepare for school midterm',budget:450,when:'Thu 18:00',status:'New'},
-    {id:'r02',student:'Napat T.',grade:'M.3',subject:'Science',goal:'Strengthen foundations',budget:350,when:'Tue 17:00',status:'New'}
-  ],
-  earnings: [{label:'M.4 Mathematics (TutorPair)',total:3600,commission:432,source:'TutorPair'}, {label:'BYOS group students',total:3000,commission:0,source:'BYOS'}],
-  admin: {pendingTutors:12,refundRequests:5,activeStudents:384,monthlyGMV:248000}
+  tutors: {
+    new: {id:'t-new',name:'New Tutor',profile:null,verificationStatus:'not_started',verification:null,roster:[],groups:[],sessionNotes:[],offerings:[]},
+    returning: {id:'t-demo',name:'P’Mew',verificationStatus:'approved',verification:{education:'Bachelor degree',subjectCheck:'passed',teachingDemo:'Approved demo example'},profile:{credentials:{institution:'Example university',experienceYears:'4',intro:'Patient explanations with school exam practice.'},preferences:{detail:1,practice:2,dialogue:2,guidance:1,atmosphere:2,formality:3,flexibility:2,energy:3,motivation:5},subjects:['Mathematics'],grades:['M.3','M.4','M.5','M.6'],topics:['Algebra','Functions','Word Problems'],price:450,pace:['slow','medium'],approach:['step','practice'],interaction:['encouraging'],schedule:['thu','sat'],formats:['one','group']},roster:[{studentId:'s-demo',name:'Nicha',grade:'M.4',subject:'Mathematics',source:'TutorPair'},{studentId:'byos-01',name:'Mint',grade:'M.4',subject:'Mathematics',source:'BYOS'}],groups:['g01'],sessionNotes:[],offerings:[{id:'o-demo',subject:'Mathematics',grades:['M.4','M.5','M.6'],topics:['Algebra','Functions','Word Problems'],goalType:'school-grade',courseFocus:'Midterm exam',price:450,formats:['one','group'],schedule:['thu','sat']}]}
+  },
+  parents: {
+    new: {id:'p-new',name:'New Parent',linkedStudentId:null,lineConnected:false},
+    returning: {id:'p-demo',name:'Khun Som',linkedStudentId:'s-demo',lineConnected:true}
+  }
+};
+export const DAYS = [
+ {id:'tue',name:'Tuesday · 18:00–20:00'},
+ {id:'thu',name:'Thursday · 17:00–20:00'},
+ {id:'sat',name:'Saturday · 09:00–12:00'},
+ {id:'sun',name:'Sunday · 13:00–17:00'}
+];
+export const SUBJECTS=['Mathematics','Science','Physics','Chemistry','Biology','English','Thai','Social Studies'];
+export const GRADES=['M.1','M.2','M.3','M.4','M.5','M.6'];
+export const TOPICS={Mathematics:['Algebra','Functions','Geometry','Word Problems'],Physics:['Mechanics','Waves','Electricity'],English:['Grammar','Reading','Writing','Conversation'],Science:['Scientific Methods','Energy','Living Systems'],Chemistry:['Atoms','Reactions','Moles'],Biology:['Cells','Genetics','Ecology'],Thai:['Reading','Writing','Grammar'], 'Social Studies':['History','Geography','Civics']};
+
+// Returning tutor's course outline from the legacy app. This tracks completed objectives, not mastery.
+export const SAMPLE_PLANS = {
+ 's-demo':[
+  {id:'lp01',title:'Algebra foundations',completed:true},
+  {id:'lp02',title:'Factorization exercises',completed:true},
+  {id:'lp03',title:'Quadratic graphs',completed:false},
+  {id:'lp04',title:'Applied word problems',completed:false}
+ ]
 };

@@ -1,0 +1,13 @@
+# The legacy project may contain secrets or historical Git data: never include them here.
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+.build/
+.DS_Store
+Thumbs.db
+__pycache__/
+*.log
+.vscode/
+.idea/

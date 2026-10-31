@@ -1,105 +1,112 @@
-# TutorPair — Data-Driven HTML Mockup (Prototype V2)
+# TutorPair — GitHub Ready MVP Demo
 
-A browser-based **working TutorPair mockup** built with **HTML, CSS and vanilla JavaScript**. No TSX, React or `npm install` is needed. Contains 45 real HTML entry pages and a shared component renderer, with consistent responsive desktop/mobile UI.
+**HTML + CSS + Vanilla JS** interactive web prototype for the Nov 3 startup practice pitch. It supports **new-user → active-user journeys** for Students and Tutors, and a linked Parent progress view. It does not need Node.js, React, npm, API keys or a backend to run.
 
-> **PROTOTYPE ONLY.** All tutors, students, ratings, prices, statistics and progress shown are invented sample records. No real payment, login, matching, LINE messaging or consent verification is implemented.
+> **All users, credentials, prices, quizzes, ranking data, enrollments, verification approvals and LINE interactions are fictional demo data.** Do not use this app for actual tutoring, identity verification, payments or storing minors' information.
 
-## 1. Run on Windows (VS Code)
+## Quick start on Windows
 
-From the project root, open Terminal (PowerShell):
+1. Extract the ZIP. In VS Code, open the folder containing this README.
+2. Open a terminal and run:
 
 ```powershell
 cd frontend
 py -m http.server 5500
 ```
 
-Open **http://localhost:5500** in Chrome or Edge.
+3. Visit **http://localhost:5500** in Chrome or Edge.
+4. Click **Start demo** or **Log in**, then choose **New Student**, **New Tutor**, **New Parent** or **Returning Tutor**.
 
-**Do not just double-click an HTML file.** The browser needs a local HTTP server to load JavaScript ES Modules correctly. The server is only for frontend demo development.
+**Do not double-click the `.html` files**: the site uses JavaScript ES Modules and should be served through a local HTTP server. Only browser `localStorage` is used for demo persistence. Use the app header **Reset** to start over.
 
-Alternatively, VS Code **Live Server** will work if its web root is `frontend/`.
+## What's new in this release
 
-## 2. Try it
+| Feature | What it does |
+|---|---|
+| New Tutor Onboarding | Three-step wizard: professional profile → subject/grade/price/schedule → 9 slider attributes |
+| Add Subject / Course | Five-step course offering wizard: Category → Subject → Goal → Focus → Teaching details |
+| Matching attributes | Student and Tutor use **the same 9 slider definitions** (five teaching preferences, four interaction preferences) |
+| Hard filters + Weighted ranking | Approved tutor + subject + grade + class type + budget + schedule; then weights with a 9-slider preference fit |
+| Verification gate | New tutor is invisible in matching until simulated Admin approval |
+| My Students & Learning Plans | Student list, add/toggle/delete learning objectives, completed-objectives percentage |
+| BYOS + group filling | Tutor creates a group with existing students, then simulates filling vacant marketplace seats |
+| Parent Progress | Shares completed objectives and tutor session notes for the linked demo student |
+| New/Returning | Empty dashboards for new accounts; realistic sample activity for returning accounts |
 
-1. Open the landing page at `/`.
-2. Click **Log in**.
-3. Select **Student**, **Tutor**, **Parent** or **Admin** from the demo role cards.
-4. Student → **Learning request** → **Tutor matching**. Changing subject/grade/format/budget affects which example records qualify.
-5. Tutor → **Session notes** → change topic/quiz and save. Log out and select Parent; **Parent dashboard** and **Learning progress** display the same updated data.
-6. Tutor → **Create small group**, or **Group seats** → click **Simulate filling 1 seat**. The sample seat count changes.
-7. Parent → **LINE settings** → connect/disconnect (simulated), toggle preferences; **Notifications** → show a sample LINE-looking report.
-8. Use **Reset sample data** in the top right (desktop) to restore the defaults.
+## Important demo navigation notes
 
-**Demo accounts are for navigation only** and use `localStorage`. They do not authenticate real users. Forms and demo actions are not connected to anyone else's accounts.
+**New Student (matching)**: Start **New Student** → Learning Request → fill 3 steps (the second contains all 9 sliders) → 1-second loading → top 3 qualified tutors (or fewer when eligible options are limited). Student profile and tutor profiles use the same 1–5 scale. Use the *How scores are calculated* disclosure to explain each weight.
 
-## 3. Where to edit data — MOST IMPORTANT
+**New Tutor**: Start **New Tutor** → **Tutor Profile** (3 steps) → **Teaching Subjects** (the legacy AddSubjectDialog concept reimplemented as a 5-step wizard) → **Verification** → switch app header **Demo view: Admin** → Tutor applications → Approve → switch back to Tutor → Student Requests / Small Groups → My Students & Learning Plans → Session Notes.
 
-Open **`frontend/assets/data/mock-data.js`**.
+**Returning Tutor**: Start **Active Tutor** from Login → **My Students & Learning Plans** → check an objective or add a new one → **Small Groups** → simulate filling a seat → **Session Notes**. Use the top header **Demo view → Parent** to see shared progress for Nicha, the sample linked student.
 
-```js
-export const mockData = {
-  people: { ... },
-  tutors: [ ... ],             // Names, subjects, price, match samples
-  student: { ... },            // Current package, quiz history, skills
-  groupClasses: [ ... ],       // Group capacity, BYOS, platform seats
-  latestNote: { ... },         // Tutor note shared with parent UI
-  notifications: [ ... ],
-  line: { ... },               // Demo notification preferences
-  requests: [ ... ],
-  earnings: [ ... ],
-  admin: { ... }
-};
-```
+**NOTE:** Starting a new scenario from public Login resets the demo. To keep changes when switching roles, use the **Demo view** dropdown in the top right instead.
 
-Modify values there, **not in HTML**. Reload the browser. If you have already submitted demo forms, click **Reset sample data** first because browser-saved data takes priority over initial mock data.
-
-For example, change `student.latestQuiz: 7` to `8`, or `latestNote.topic` to a new topic. Student and Parent components read from this shared source. For new content types, additional UI code may still be necessary, but ordinary content edits are centralized.
-
-## 4. Folder structure
+## Project structure
 
 ```text
-TutorPair_Mockup_Ready/
+TutorPair_GitHub_Ready/
 ├── frontend/
-│   ├── index.html                   # Public landing entry point
-│   ├── login.html, register.html    # Demo authentication UI
-│   ├── find-tutors.html, for-tutors.html
-│   ├── student/*.html               # Student URLs
-│   ├── tutor/*.html                 # Tutor URLs
-│   ├── parent/*.html                # Parent URLs
-│   ├── admin/*.html                 # Admin URLs
+│   ├── index.html, login.html, register.html
+│   ├── student/                  Student journey pages
+│   ├── tutor/                    Tutor journey + subjects.html + students.html
+│   ├── parent/                   Parent progress and LINE preview
+│   ├── admin/                    Admin verification simulation
 │   └── assets/
-│       ├── css/                    # base, public, workspace, components, responsive
-│       │   └── styles.css          # Stylesheet entry point
-│       ├── data/mock-data.js       # SAMPLE DATA: edit here
-│       ├── js/data-source.js       # DATA ADAPTER: mock → API
-│       ├── js/main.js              # Data initialization
-│       ├── js/app.js               # Short role/page router
-│       ├── js/core/                # Shared UI, events, session-note preview
-│       ├── js/pages/               # Public, Dashboard, Student, Tutor, Parent, Admin
-│       └── images/favicon.svg
+│       ├── data/mock-data.js     <- EDIT SAMPLE TUTOR DATA HERE
+│       ├── js/preferences.js     <- SHARED NINE SLIDER DEFINITIONS
+│       ├── js/matching.js        <- HARD FILTERS + WEIGHTS
+│       ├── js/store.js           <- Local demo state (future API)
+│       ├── js/plans.js           <- Shared learning objectives
+│       ├── js/tutor.js, student.js, parent.js, admin.js, public.js, ui.js, main.js
+│       └── css/styles.css        <- Responsive styles
 ├── docs/
-│   ├── DATA_FLOW.md
-│   └── API_MIGRATION.md
+│   ├── DEMO_SCRIPT.md            3-minute presentation flow
+│   ├── LEGACY_TUTOR_REUSE.md     Which older features were adapted
+│   └── TUTOR_ONBOARDING.md       Onboarding and simulated verification notes
+├── .gitignore
 └── README.md
 ```
 
-The 45 HTML files are intentionally **small routing shells**, not 45 copies of the same navigation/sidebar. Each file has real HTML `head`/`body` tags and identifies a route through `data-role`/`data-page`. The reusable UI renderer builds the page. This dramatically reduces duplicate HTML and CSS changes.
+## Suggested weight configuration
 
-## 5. When real data is available
+`frontend/assets/js/matching.js`
 
-- For a one-time replacement of sample content, edit `mock-data.js`.
-- For live database records, build an authenticated backend endpoint returning the **same object shape** as the mock data, e.g. `GET /api/bootstrap`, and switch `DATA_MODE` from `'mock'` to `'api'` in `assets/js/data-source.js`. Read-only page rendering can then use API records without rewriting the page layout.
-- **Write actions still need work**: session notes, seat additions, payments, LINE settings, registration, verification, authentication etc. need proper POST/PATCH endpoints and access control. The current adapter intentionally rejects writes in API mode instead of silently faking them.
-- Real pages must enforce authorization **on the server**, not only hide the sidebar. Parent-child linking and access to minors' data require particular care.
+| Component | Weight |
+|---|---:|
+| School topics and academic goal | 30% |
+| Current level and teaching pace | 20% |
+| Teaching preferences (9 sliders + approach/interaction) | 15% |
+| Schedule overlap | 15% |
+| Price fit | 15% |
+| Tutor quality evidence (sample) | 5% |
 
-Read `docs/API_MIGRATION.md` for the next steps.
+The match score is a **heuristic suitability indicator**, not a statistical chance of grade improvement. No AI model is called to rank or explain tutors. Matching and explanatory highlights are deterministic. Real AI-generated explanations are a future enhancement.
 
-## 6. Visual design
+## For the team
 
-Clean educational SaaS style, consistent brand purple/indigo, spacious cards, dashboards, information hierarchy, mobile navigation, deliberate empty states, visible demo labels. Styling is split into dedicated CSS files and imported by `assets/css/styles.css`; adjust brand tokens at the top of `base.css` to rebrand quickly.
+- **Edit mock content:** `frontend/assets/data/mock-data.js`.
+- **Change slider meanings:** `frontend/assets/js/preferences.js` (edit once to affect both forms).
+- **Change matching formula/weights:** `frontend/assets/js/matching.js`.
+- **Change Tutor Form / Course Wizard / Student Plans:** `frontend/assets/js/tutor.js`.
+- **Change Student Form:** `frontend/assets/js/student.js`.
+- **Change styles:** `frontend/assets/css/styles.css`.
+- **Add backend:** `frontend/assets/js/store.js` must be replaced with authenticated, role-scoped API calls and server-side authorization. LocalStorage and role switching provide **no real security**.
 
-## 7. Validation performed
+The old React/TSX project is deliberately **not included** in this repo. Neither `.env` nor API keys should be committed. Do not push the legacy project ZIP or `.git` history here.
 
-- JavaScript syntax verified using `node --check`.
-- All 45 page route render functions exercised in a lightweight Node DOM-stub smoke check with no exceptions.
-- Project served with Python HTTP server and returned valid HTML. Full screenshot/interaction validation in Chromium **could not be completed in this environment due to browser navigation restrictions**; please validate the rendering locally using the setup above.
+## GitHub — first push
+
+From inside `TutorPair_GitHub_Ready`, after creating the repository:
+
+```powershell
+git init
+git add .
+git commit -m "Build TutorPair interactive matching and tutor onboarding MVP"
+git branch -M main
+git remote add origin https://github.com/Gamaneeya/Tutorpair_Mockup.git
+git push -u origin main
+```
+
+If the origin remote already exists, run `git remote set-url origin https://github.com/Gamaneeya/Tutorpair_Mockup.git` instead of `git remote add origin ...`.
