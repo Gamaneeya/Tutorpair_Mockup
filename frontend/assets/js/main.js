@@ -1,3 +1,4 @@
+import {getAuthSession} from './auth.js';
 import {renderPublic} from './public.js';
 import {renderStudent} from './student.js';
 import {renderTutor} from './tutor.js';
@@ -6,7 +7,8 @@ import {renderAdmin} from './admin.js';
 const role=document.body.dataset.role;
 const page=document.body.dataset.page;
 try{
- if(!role)renderPublic(page);
+ if(role&&!getAuthSession()){location.replace('/login.html');}
+ else if(!role)renderPublic(page);
  else if(role==='student')renderStudent(page);
  else if(role==='tutor')renderTutor(page);
  else if(role==='parent')renderParent(page);

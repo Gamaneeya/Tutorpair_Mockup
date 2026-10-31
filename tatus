@@ -1,0 +1,52 @@
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/DEMO_SCRIPT.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/LEGACY_TUTOR_REUSE.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/REVIEW_THIS_VERSION.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/TUTOR_ONBOARDING.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/admin/dashboard.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/admin/tutors.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/assets/css/styles.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/assets/data/mock-data.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/assets/js/admin.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/assets/js/main.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/assets/js/matching.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/assets/js/parent.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/assets/js/plans.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/assets/js/preferences.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/assets/js/public.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/assets/js/store.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/assets/js/student.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/assets/js/tutor.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/assets/js/ui.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/index.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/login.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/parent/dashboard.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/parent/line.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/parent/link.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/parent/progress.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/register.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/student/booking.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/student/courses.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/student/dashboard.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/student/matching.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/student/progress.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/student/request.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/student/tutor.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/tutor/dashboard.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/tutor/groups.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/tutor/notes.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/tutor/onboarding.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/tutor/requests.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/tutor/students.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/tutor/subjects.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/tutor/verification.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/matching.test.mjs', LF will be replaced by CRLF the next time Git touches it
+ README.md                      | 46 [32m+++++++++++++++++++++++++++++++[m[31m-----------[m
+ frontend/assets/css/styles.css | 20 [32m++++++++++++++++++[m
+ frontend/assets/js/main.js     |  4 [32m+++[m[31m-[m
+ frontend/assets/js/public.js   | 28 [32m++++++++++++++++++++[m[31m-----[m
+ frontend/assets/js/store.js    | 21 [32m+++++++++++++[m[31m------[m
+ frontend/assets/js/tutor.js    |  7 [32m+++++[m[31m--[m
+ frontend/assets/js/ui.js       | 15 [32m+++++++++[m[31m-----[m
+ 7 files changed, 110 insertions(+), 31 deletions(-)

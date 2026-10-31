@@ -1,3 +1,4 @@
+import {getAuthSession} from './auth.js';
 import {state,mutate,tutorIsActive} from './store.js';
 import {DAYS,SUBJECTS,GRADES,GOALS,COURSE_FOCUS} from '../data/mock-data.js';
 import {QUESTIONS} from './preferences.js';
@@ -98,7 +99,7 @@ function subjects(){
  <button class="button outline" type="submit">Submit subject request →</button><p id="scope-msg" class="form-message"></p></form>`)}
  ${panel('Why this is simpler',`${item('Identity & teaching readiness','Screened once at onboarding')}${item('New subject / extra grades','Review only the new subject/grade scope')}${item('New course, rate or time','Immediately publish or edit within an approved scope')}${item('Existing courses','Never paused because a new subject is pending')}`)}`:'';
  workspace('tutor','subjects','Teaching subjects & courses','Approved teaching scope is separate from freely published course listings.',
- `${panel('Your subject/grade approvals',scopeHtml||empty('No applications','Complete your profile to submit a subject for review.'))}${pending.length?`<div class="policy-note">${pending.length} subject request(s) awaiting a simulated Admin review. These do not affect existing approved subjects.</div>`:''}<div class="two-col big-left">${formArea}</div>${requestForm?`<div class="two-col big-left section-gap">${requestForm}</div>`:''}`);
+ `${panel('Your subject/grade approvals',scopeHtml||empty('No applications','Complete your profile to submit a subject for review.'))}${pending.length?`<div class="policy-note">${pending.length} subject request(s) awaiting a simulated Admin review. These do not affect existing approved subjects.</div>${getAuthSession()?.type==='account'?'<button type="button" class="button outline" id="simulate-subject-approval">Simulate additional subject approval (demo only) →</button>':''}`:''}<div class="two-col big-left">${formArea}</div>${requestForm?`<div class="two-col big-left section-gap">${requestForm}</div>`:''}`);
  const form=$('#course-form');
  if(form){
   const subject=$('select[name="subject"]',form),grade=$('select[name="grade"]',form);
@@ -125,6 +126,7 @@ function subjects(){
    });location.reload();
   });
  }
+ $('#simulate-subject-approval')?.addEventListener('click',()=>{if(getAuthSession()?.type!=='account')return;mutate(st=>{(st.tutor.subjectApprovals||[]).forEach(x=>{if(x.status==='pending')x.status='approved'});const record=st.catalog.tutors.find(x=>x.id==='t-new');if(record)record.approvedScopes=st.tutor.subjectApprovals;});location.reload()});
  $('#scope-form')?.addEventListener('submit',e=>{
   e.preventDefault();const fd=new FormData(e.currentTarget),subject=fd.get('newSubject'),grades=fd.getAll('newGrades');
   const already=new Set(scopes.filter(x=>x.subject===subject&&x.status!=='rejected').flatMap(x=>x.grades));const missing=grades.filter(g=>!already.has(g));
@@ -155,7 +157,7 @@ function verification(){const s=state(),t=s.tutor;
  ${item('Tutor identity','Identity/age confirmation (simulated)',tag(status==='approved'?'Approved':status==='pending'?'Under review':'Required',status==='approved'?'green':'orange'))}
  ${item('Teaching readiness','Academic evidence and short explanation demo',tag(status==='approved'?'Approved':status==='pending'?'Under review':'Required',status==='approved'?'green':'orange'))}
  ${status==='approved'?`<div class="policy-note">✓ Approved once. Your existing courses continue normally even while a new subject request is under review.</div><div class="row-actions">${btn('Teaching subjects & courses →','/tutor/subjects.html')}${btn('Small-group courses →','/tutor/groups.html','outline')}</div>`:
- status==='pending'?`<div class="policy-note">Review pending. Switch the Demo view to Admin → Tutor applications to approve the simulated submission.</div>${btn('Return to dashboard →','/tutor/dashboard.html','outline')}`:
+ status==='pending'?`<div class="policy-note">${getAuthSession()?.type==='account'?'Your application is pending. For this browser-only demo, you can simulate the Admin approval below. No identity checks are performed.':'Review pending. Switch the Demo view to Admin → Tutor applications to approve the simulated submission.'}</div>${getAuthSession()?.type==='account'?'<button class="button primary" type="button" id="simulate-approval">Simulate Admin approval (demo only) →</button>':''}${btn('Return to dashboard →','/tutor/dashboard.html','outline')}`:
  `<form id="verification-form" class="stack-form">
  ${formSelect('education','Education / qualifications (demo)',[{value:'University student',label:'Current university student'},{value:'Bachelor degree',label:'Bachelor degree'},{value:'Teaching credential',label:'Teaching credential'}],'University student')}
  ${formSelect('subjectCheck','Subject knowledge evidence (demo)',[{value:'Transcript or degree',label:'Transcript or degree'},{value:'Grade-level subject quiz',label:'Subject quiz'},{value:'Exam results',label:'Exam results'}],'Transcript or degree')}
@@ -164,6 +166,7 @@ function verification(){const s=state(),t=s.tutor;
  ${panel('Approved / pending subjects',`${scopes}${item('First requested subject',initial?`${initial.subject} · ${initial.grades.join(', ')}`:'No subject submitted')}${item('Add a new subject later','Only new subject/grade eligibility is reviewed',btn('Manage subjects →','/tutor/subjects.html','outline'))}<div class="policy-note">Pending subject checks never disable the subjects you have already been approved to teach.</div>`)}</div>`;
  workspace('tutor','verification','Tutor verification','One-time identity review plus independent subject/grade approvals.',html);
  $('#verification-form')?.addEventListener('submit',e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.currentTarget));mutate(st=>{st.tutor.verificationStatus='pending';st.tutor.verification={education:f.education,subjectCheck:f.subjectCheck,teachingDemo:f.teachingDemo,submitted:'Demo application'};});location.reload()});
+ $('#simulate-approval')?.addEventListener('click',()=>{if(getAuthSession()?.type!=='account')return;mutate(st=>{st.tutor.verificationStatus='approved';(st.tutor.subjectApprovals||[]).forEach(x=>{if(x.status==='pending')x.status='approved'});const record=st.catalog.tutors.find(x=>x.id==='t-new');if(record){record.verified=true;record.approvedScopes=st.tutor.subjectApprovals;record.quality=70;}});location.reload()});
 }
 function requests(){const s=state(),t=s.tutor;
  if(!t.profile)return workspace('tutor','requests','Student requests','Complete your tutor profile first.',empty('Your expertise is not set yet','Add subjects and availability so TutorPair can send relevant requests.',btn('Complete profile →','/tutor/onboarding.html')));

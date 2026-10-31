@@ -1,0 +1,38 @@
+import assert from 'node:assert/strict';
+import {registerDemoAccount,loginDemoAccount,getAuthSession,logout,beginDemoSession} from '../frontend/assets/js/auth.js';
+import {prepareRegisteredWorkspace,state,save,start,switchRole} from '../frontend/assets/js/store.js';
+
+function memoryStorage(){const m=new Map();return {getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k),clear:()=>m.clear(),key:i=>[...m.keys()][i]||null,get length(){return m.size}}}
+globalThis.localStorage=memoryStorage();globalThis.sessionStorage=memoryStorage();
+globalThis.window={dispatchEvent(){}};globalThis.Event=class Event{constructor(type){this.type=type}};
+const alice=await registerDemoAccount({name:'Alice Student',email:'Alice@Example.COM',password:'examplePass1',role:'student'});
+assert.equal(getAuthSession().role,'student');
+assert.equal(getAuthSession().email,'alice@example.com');
+prepareRegisteredWorkspace(alice);
+assert.equal(state().student.name,'Alice Student');
+assert.equal(state().student.course,null);
+let work=state();work.student.request={subject:'Mathematics'};save(work);
+logout();assert.equal(getAuthSession(),null);
+await assert.rejects(loginDemoAccount({email:'alice@example.com',password:'wrong-password'}),/incorrect/);
+await loginDemoAccount({email:'alice@example.com',password:'examplePass1'});
+prepareRegisteredWorkspace(alice);
+assert.equal(state().student.request.subject,'Mathematics');
+assert.equal(switchRole('tutor').role,'student','registered account cannot switch role');
+logout();
+const tutor=await registerDemoAccount({name:'Tutor Bee',email:'bee@example.com',password:'examplePass2',role:'tutor'});
+prepareRegisteredWorkspace(tutor);
+assert.equal(state().tutor.name,'Tutor Bee');
+assert.equal(state().student.request,null,'account workspace data is isolated');
+await assert.rejects(registerDemoAccount({name:'Repeat',email:'ALICE@example.com',password:'examplePass3',role:'parent'}),/already registered/);
+logout();
+await loginDemoAccount({email:'alice@example.com',password:'examplePass1'});
+assert.equal(state().student.request.subject,'Mathematics','second account cannot overwrite Alice state');
+start('tutor','returning');
+assert.equal(getAuthSession().type,'demo');
+assert.equal(state().tutor.roster.length>0,true);
+switchRole('parent');assert.equal(state().role,'parent');
+assert.equal(state().parent.lineConnected,true);
+logout();
+await loginDemoAccount({email:'bee@example.com',password:'examplePass2'});
+assert.equal(state().tutor.name,'Tutor Bee','demo switching cannot reset registered accounts');
+console.log('PASS: register, login, wrong password, unique emails, saved profile, role restriction, account isolation, demo quick view');
