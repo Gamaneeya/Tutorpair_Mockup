@@ -1,3 +1,13 @@
+# Netlify: import this repository and deploy the Figma-based static site.
 [build]
   publish = "frontend"
   command = ""
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

@@ -1,6 +1,5 @@
 /** Transparent deterministic matching for the demo; AI explanations are NOT being generated. */
 import {preferenceFit} from './preferences.js';
-import {scheduleCompatible,normalizedSlots,overlappingDays} from './scheduling.js';
 export const WEIGHTS={goal:0.30,levelPace:0.20,schedule:0.15,price:0.15,teaching:0.15,quality:0.05};
 const clamp=x=>Math.max(0,Math.min(100,x));
 const overlap=(wanted,available)=>{
@@ -21,8 +20,7 @@ function fit(student,tutor,offering){
  const level=tutor.levels?.includes(student.currentLevel)?100:50;
  const pace=tutor.pace?.includes(student.pace)?100:tutor.pace?.includes('medium')?70:40;
  const levelPace=Math.round(level*.55+pace*.45);
- const shared=overlappingDays(normalizedSlots(student.weeklySlots,student.schedule),normalizedSlots(offering.weeklySlots,offering.schedule),Number(student.durationMinutes||60));
- const schedule=clamp(60+10*Math.min(4,shared.length));
+ const schedule=clamp(60+10*Math.min(4,(student.schedule||[]).filter(x=>offering.schedule.includes(x)).length));
  const price=clamp(60+40*(Number(student.budget)-offering.price)/Math.max(1,Number(student.budget)));
  const teaching=preferenceFit(student,tutor);
  const quality=clamp(Number(tutor.quality)||50);
@@ -33,13 +31,13 @@ function fit(student,tutor,offering){
  if(tutor.pace?.includes(student.pace))why.push('Teaches at your preferred pace');
  if(tutor.approach?.includes(student.approach))why.push('Matches your preferred teaching approach');
  if(tutor.interaction?.includes(student.interaction))why.push('Matches your preferred interaction style');
- if(scheduleCompatible(student,offering))why.push('Time windows overlap for your lesson duration');
+ if((student.schedule||[]).some(x=>offering.schedule.includes(x)))why.push('Available at a time you chose');
  return {score,breakdown,preferenceScore:preferenceFit(student,tutor),why:why.slice(0,3)};
 }
 function validOffer(student,tutor,offering){
  return offering.subject===student.subject&&approvedToTeach(tutor,offering.subject,student.grade)&&offering.published!==false&&
  offering.grades?.includes(student.grade)&&offering.formats?.includes('one')&&
- Number(offering.price)<=Number(student.budget)&&scheduleCompatible(student,offering);
+ Number(offering.price)<=Number(student.budget)&&(student.schedule||[]).some(day=>offering.schedule?.includes(day));
 }
 export function matchTutors(student,tutors){
  return tutors.map(t=>{
@@ -53,11 +51,11 @@ export function matchGroups(student,groups,tutors){
  return groups.filter(g=>{
    const t=tutors.find(x=>x.id===g.tutorId);
    return approvedToTeach(t,g.subject,g.grade)&&g.byos+g.platform<g.capacity&&g.subject===student.subject&&g.grade===student.grade&&
-   scheduleCompatible(student,{schedule:[g.schedule],weeklySlots:g.weeklySlots})&&g.sessions>0&&g.durationMinutes>0&&Number(g.durationMinutes)===Number(student.durationMinutes||60)&&
+   (student.schedule||[]).includes(g.schedule)&&g.sessions>0&&g.durationMinutes>0&&
    (g.price/g.sessions/(g.durationMinutes/60))<=Number(student.budget);
  }).map(g=>{
    const tutor=tutors.find(t=>t.id===g.tutorId);
-   const offering={subject:g.subject,grades:[g.grade],formats:['group'],schedule:[g.schedule],weeklySlots:g.weeklySlots,price:g.price/g.sessions/(g.durationMinutes/60),goalType:g.goalType||null};
+   const offering={subject:g.subject,grades:[g.grade],formats:['group'],schedule:[g.schedule],price:g.price/g.sessions/(g.durationMinutes/60),goalType:g.goalType||null};
    return {...g,tutor,fit:fit(student,tutor,offering)};
  }).sort((a,b)=>b.fit.score-a.fit.score||a.id.localeCompare(b.id)).slice(0,3);
 }
