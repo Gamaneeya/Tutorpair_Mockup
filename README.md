@@ -1,3 +1,15 @@
+# TutorPair — MVP V7 Team Feedback Review
+
+**V7 demo revision:** tutor rate validation, a clear file/video verification step, sample tutor-profile statistics and a personalized Why Matched sentence, playable **illustrative (silent) three-minute teaching-storyboard clips**, Tutor-side booking/worksheet/plan editing, Tutor-side reschedule approval, post-session note and dual reviews, plus Student punch-card/Revision Vault placeholders.
+
+See **[V7 checklist](docs/TEAM_FEEDBACK_V7_CHECKLIST_TH.md)**, **[Figma prompt](docs/FIGMA_PROMPT_V7_EN.md)** and **[Git instructions](docs/GIT_UPDATE_V7_TH.md)**.
+
+**Crucial limitations:** This remains a browser-only prototype; no real cross-device BYOS, file/video uploads, verified rating statistics, public review infrastructure, notifications, LINE Push, worksheet AI or payments. Teaching demo MP4s are original illustrated **silent samples** and do not represent a tutor's actual teaching ability.
+
+Run logic tests: `node --test tests/*.test.mjs integrations/line/line-service.test.mjs`. The website itself needs only a local static HTTP server (`cd frontend && py -m http.server 5500`). Full browser end-to-end validation is still recommended; it could not be completed in the build environment.
+
+---
+
 # TutorPair MVP V6 — Team Feedback Interactive Prototype
 
 Latest iteration of TutorPair for Thai M.1–M.6 online tutoring. Plain HTML/CSS/JavaScript, no build step. Keeps V5 BYOS and unified Student account.

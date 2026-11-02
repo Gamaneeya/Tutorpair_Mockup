@@ -93,3 +93,33 @@ body[data-role='']{background:#fff}.nav{height:83px;background:#fff;position:rel
 .workflow-steps{display:flex;gap:7px;flex-wrap:wrap;margin:17px 0 22px}.workflow-pill{border:1px solid #e4e6ed;padding:9px 10px;color:#8690a5;border-radius:100px;font-size:10px;font-weight:800}.workflow-pill.on{color:#5450c4;background:#eeeeff;border-color:#d6d1ff}
 .lesson-stepper{display:grid;gap:8px;margin-top:18px}.lesson-step{display:flex;align-items:center;gap:12px;border:1px solid #e9eaf4;padding:13px;border-radius:12px}.lesson-step>div{flex:1;display:grid;gap:4px}.lesson-step strong{font-size:12px}.lesson-step small{font-size:10px}.lesson-step.done{background:#f1fbf5}.lesson-step.in-progress{background:#f7f5ff;border-color:#cec9fa}.lesson-index{width:29px;height:29px;background:#eeecff;border-radius:100%;display:grid;place-items:center;font-size:12px;font-weight:800;color:#6761ce;flex:none}
 @media(max-width:650px){.weekly-row{align-items:flex-start;flex-direction:column}.weekly-time{width:100%}.weekly-time select{flex:1;min-width:0}.workflow-pill{font-size:9px}.match-meta{max-width:100%}}
+
+/* Tutor verification — teaching demo upload / URL (V6 UI refinement) */
+.teaching-demo-box{gap:12px}
+.teaching-demo-box .field{gap:8px}
+.teaching-demo-box .field>span{font-size:12px;font-weight:700;color:#464469}
+.teaching-demo-box input[type="file"]{max-width:100%;padding:13px;border:1px dashed #aba4ea;background:#fff;border-radius:10px;color:#5a577e}
+.teaching-demo-box input[type="url"]{width:100%;padding:12px 13px;border:1px solid #dedcf0;border-radius:10px;background:#fff;font:inherit;font-size:12px}
+.teaching-demo-box input:focus-visible{outline:3px solid rgba(106,94,221,.25);outline-offset:2px}
+.teaching-demo-box #local-demo-preview{width:100%;max-height:260px;border-radius:10px;background:#171728;margin-top:2px}
+.teaching-demo-box #local-demo-preview[hidden]{display:none}
+.teaching-demo-box .demo-option-divider{display:flex;align-items:center;gap:12px;color:#8a85b2;font-size:11px;font-weight:800}
+.teaching-demo-box .demo-option-divider:before,.teaching-demo-box .demo-option-divider:after{content:"";flex:1;border-top:1px solid #dddaf5}
+.teaching-demo-box .required-label{display:inline-block;margin-left:7px;padding:3px 7px;border-radius:7px;background:#e9e6ff;color:#6155be;font-size:10px;vertical-align:middle}
+.teaching-demo-box .policy-note{line-height:1.6}
+
+/* V7 — readable match narratives, embedded illustrated teaching-demo videos & progress extras */
+.why-sentence{font-size:12px;line-height:1.85;color:#484365;font-weight:600;margin:8px 0 12px;max-width:640px}
+.match-preference-note p{margin-top:9px;line-height:1.7;font-weight:400}
+.match-meta strong{color:#49476e;font-size:12px}.match-meta>div{margin-top:3px}.match-meta>small{display:block;color:#8c8da3;font-size:10px;margin-top:6px}
+.teaching-video-demo{border:1px solid #e2dffa;background:#f7f6ff;border-radius:12px;padding:12px;margin-top:12px}
+.teaching-video-demo summary{color:#5f53be;font-size:12px;font-weight:800;cursor:pointer;line-height:1.5}
+.teaching-video-demo summary small{font-weight:500;color:#8987a0}
+.teaching-video-demo video{display:block;max-width:100%;width:490px;aspect-ratio:16/9;background:#1b1b36;border-radius:8px;margin:12px 0}
+.teaching-video-demo .fine-print{font-size:10px;color:#76758f}
+.punch-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:13px 0}
+.punch{background:#f5f5fa;border:1px solid #e4e6ef;border-radius:12px;min-height:86px;padding:9px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px}
+.punch span{display:grid;place-items:center;border:2px dashed #c5c2e2;color:#8a82bc;border-radius:50%;width:32px;height:32px;font-size:15px;font-weight:800}
+.punch small{font-size:10px;color:#858aa1}.punch-done{background:#edf8f3;border-color:#b2e2c6}.punch-done span{background:#d4f2e1;border:2px solid #67bb8c;color:#24805c}
+.vault-list .list-item{border-bottom:1px solid #f0f0f6}
+@media(max-width:530px){.punch-strip{gap:6px}.punch{padding:5px}.punch small{font-size:9px}}

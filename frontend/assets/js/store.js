@@ -8,14 +8,14 @@ const clone=x=>JSON.parse(JSON.stringify(x));
 export function studentCourses(s){return Array.isArray(s.student?.courses)?s.student.courses:(s.student?.course?[s.student.course]:[])}
 export function addStudentCourse(s,c){s.student.courses??=studentCourses(s);s.student.courses.push(c);s.student.course=c;return c}
 export function initialState(){return {role:null,scenario:null,student:clone(SAMPLE.students.new),tutor:clone(SAMPLE.tutors.new),parent:clone(SAMPLE.parents.new),catalog:clone(CATALOG),pendingMatch:false,matchResults:[],selectedTutorId:null,selectedGroupId:null,booking:null,notes:[],notification:[],lessonPlan:null,learningPlans:{}};}
-export function state(){try{const d=JSON.parse(localStorage.getItem(storageKey()));return d&&d.catalog?d:initialState()}catch{return initialState()}}
+export function state(){try{const d=JSON.parse(localStorage.getItem(storageKey()));if(!d?.catalog)return initialState();for(const tutor of d.catalog.tutors||[]){const original=CATALOG.tutors.find(x=>x.id===tutor.id);if(!original)continue;for(const key of ['faculty','gpaHonors','rating','ratingCount','verifiedHours','renewalRate','demoVideoUrl'])if(tutor[key]===undefined)tutor[key]=original[key];}return d}catch{return initialState()}}
 export function save(s){localStorage.setItem(storageKey(),JSON.stringify(s));window.dispatchEvent(new Event('tp:changed'));return s}
 export function mutate(fn){const s=state();fn(s);return save(s)}
 export function start(role,scenario){beginDemoSession();const s=initialState();s.role=role;s.scenario=scenario;
  if(scenario==='returning'){
   s.student=clone(SAMPLE.students.returning);
   // Three illustrative active classes for quick demo testing (not real enrollments).
-  const math={...s.student.course,sessions:4,completed:1,packageKey:'regular',durationMinutes:60,lessonPlan:[{title:'Check understanding'},{title:'Algebra practice'},{title:'School exam exercises'},{title:'Review & next steps'}]};
+  const math={...s.student.course,sessions:4,completed:4,packageKey:'regular',durationMinutes:60,lessonPlan:[{title:'Check understanding'},{title:'Algebra practice'},{title:'School exam exercises'},{title:'Review & next steps'}]};
   const physics={id:'sample-physics',title:'M.4 Physics · Exam Rescue',tutorId:'t05',tutorName:'P’Fern Nalinee',subject:'Physics',grade:'M.4',source:'TutorPair',sessions:4,completed:2,price:1840,started:true,packageKey:'sprint',durationMinutes:60,nextLesson:'Tuesday · 18:00',lessonPlan:[{title:'Review concepts'},{title:'Mechanics'},{title:'Practice exam problems'},{title:'Consolidation'}]};
   const english={id:'sample-english',title:'M.4 English · Tutor Invitation',tutorId:'t06',tutorName:'P’Jane Akarin',subject:'English',grade:'M.4',source:'BYOS',sessions:4,completed:0,price:1680,started:true,packageKey:'regular',durationMinutes:60,nextLesson:'Sunday · 13:00'};
   s.student.courses=[math,physics,english];s.student.course=math;
