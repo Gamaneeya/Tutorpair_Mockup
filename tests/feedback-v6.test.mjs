@@ -1,0 +1,6 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {PACKAGES,totalHours,courseTotal,legacySlots,overlappingDays,scheduleCompatible,validateSlots,roadmap} from '../frontend/assets/js/scheduling.js';
+test('four-session packages and live costs',()=>{assert.equal(Object.keys(PACKAGES).length,3);assert.equal(totalHours(60),4);assert.equal(totalHours(90),6);assert.equal(totalHours(120),8);assert.equal(courseTotal(450,90),2700);assert.equal(PACKAGES.cram.perWeek,4)});
+test('weekly windows require enough overlapping session-length slots',()=>{const req={packageKey:'regular',durationMinutes:90,weeklySlots:[{day:'tue',start:'18:00',end:'20:00'}]};assert.equal(scheduleCompatible(req,{weeklySlots:[{day:'tue',start:'19:00',end:'21:00'}]}),false);assert.equal(scheduleCompatible(req,{weeklySlots:[{day:'tue',start:'18:00',end:'21:00'}]}),true);assert.equal(scheduleCompatible({...req,packageKey:'sprint'},{weeklySlots:[{day:'tue',start:'18:00',end:'21:00'}]}),false)});
+test('fallback and input validity',()=>{assert.equal(legacySlots(['thu']).length,1);assert.deepEqual(overlappingDays(legacySlots(['thu']),legacySlots(['thu']),60),['thu']);assert.equal(validateSlots([{day:'fri',start:'21:00',end:'18:00'}]),false);assert.equal(roadmap({goalType:'exam-prep'}).length,4)});

@@ -14,8 +14,17 @@ export function mutate(fn){const s=state();fn(s);return save(s)}
 export function start(role,scenario){beginDemoSession();const s=initialState();s.role=role;s.scenario=scenario;
  if(scenario==='returning'){
   s.student=clone(SAMPLE.students.returning);
+  // Three illustrative active classes for quick demo testing (not real enrollments).
+  const math={...s.student.course,sessions:4,completed:1,packageKey:'regular',durationMinutes:60,lessonPlan:[{title:'Check understanding'},{title:'Algebra practice'},{title:'School exam exercises'},{title:'Review & next steps'}]};
+  const physics={id:'sample-physics',title:'M.4 Physics · Exam Rescue',tutorId:'t05',tutorName:'P’Fern Nalinee',subject:'Physics',grade:'M.4',source:'TutorPair',sessions:4,completed:2,price:1840,started:true,packageKey:'sprint',durationMinutes:60,nextLesson:'Tuesday · 18:00',lessonPlan:[{title:'Review concepts'},{title:'Mechanics'},{title:'Practice exam problems'},{title:'Consolidation'}]};
+  const english={id:'sample-english',title:'M.4 English · Tutor Invitation',tutorId:'t06',tutorName:'P’Jane Akarin',subject:'English',grade:'M.4',source:'BYOS',sessions:4,completed:0,price:1680,started:true,packageKey:'regular',durationMinutes:60,nextLesson:'Sunday · 13:00'};
+  s.student.courses=[math,physics,english];s.student.course=math;
   s.tutor=clone(SAMPLE.tutors.returning);
   s.parent=clone(SAMPLE.parents.returning);
+  for(const [id,title,grade,day] of [['g03','M.5 Math Revision','M.5','thu'],['g04','M.6 Math Exam Prep','M.6','sat']]){
+   if(!s.catalog.groups.some(g=>g.id===id))s.catalog.groups.push({id,tutorId:'t01',name:title,subject:'Mathematics',grade,schedule:day,capacity:4,byos:1,platform:0,price:1800,sessions:4,durationMinutes:60,description:'Sample active class for pitch preview.'});
+   if(!s.tutor.groups.includes(id))s.tutor.groups.push(id);
+  }
   s.selectedTutorId='t01';
   s.notes=clone(s.student.lessonNotes);s.learningPlans=clone(SAMPLE_PLANS);
   s.notification=[{text:'New Mathematics progress report available',time:'Example · Today',type:'lesson'}];
@@ -37,7 +46,7 @@ export function seedBYOSStudentPreview(){
   if(existing.some(c=>c.id==='sample-byos-math'))return;
   s.student.name=s.student.name==='New Student'?'N’Annie':s.student.name;
   s.student.grade='M.4';
-  addStudentCourse(s,{id:'sample-byos-math',title:'M.4 Mathematics · Small Group',tutorId:'sample-pmew',tutorName:'P’Mew',subject:'Mathematics',grade:'M.4',source:'BYOS',sessions:8,completed:2,price:1600,started:true,nextLesson:'Saturday · 09:00–12:00',format:'group'});
+  addStudentCourse(s,{id:'sample-byos-math',title:'M.4 Mathematics · Small Group',tutorId:'sample-pmew',tutorName:'P’Mew',subject:'Mathematics',grade:'M.4',source:'BYOS',sessions:4,completed:2,price:1600,started:true,nextLesson:'Saturday · 09:00–12:00',format:'group'});
  });
 }
 export function activeCourse(s){return studentCourses(s).some(c=>c.started)}
